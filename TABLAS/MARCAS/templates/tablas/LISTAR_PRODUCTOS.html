@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+
+{% block titulo %} LISTA DE PRODUCTOS {% endblock %}
+
+{% block contenido %}
+
+<div class="card">
+  <div class="card-header">
+    <a name="" id="" class="btn btn-success" href="{% url 'crear_producto' %}" role="button">AGREGAR PRODUCTO</a>
+  </div>
+
+  <div class="card-body">
+    <h4 class="card-title">PRODUCTOS</h4>
+    <div class="table-responsive">
+      <table class="table table-primary">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">PRODUCTO</th>
+            <th scope="col">STOCK ACTUAL</th>
+            <th scope="col">PRECIO</th>
+            <th scope="col">ACCIONES</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in productos %}
+          <tr class="">
+              <td>{{ producto.id }}</td>
+              <td>
+                  {% if producto.categoria.nombre == "Indumentaria" or producto.categoria.nombre == "Accesorios" or producto.categoria.nombre == "Medicamentos" %}
+                      {{producto.categoria}} para {{ producto.animal}} {{ producto.edad}} {{ producto.marca}}
+                  {% else %}
+                      {{producto.nombre}} para {{ producto.animal}} {{ producto.edad}} {{ producto.marca}}
+                      {% if producto.peso %}
+                          x {{producto.peso}} Kg
+                      {% endif %}
+                  {% endif %}
+                  {% if producto.obs %}
+                      {{ producto.obs }}
+                  {% endif %}
+              </td>
+              <td>{{ producto.stock_a }}</td>
+              <td>{{ producto.precio }}</td>
+              <td>
+                  <a class="btn btn-info" href="{% url 'editar_producto' producto.id %}" role="button">Editar</a> | 
+                  <a class="btn btn-danger" href="{% url 'eliminar_producto' producto.id %}" role="button">Borrar</a>
+              </td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+
+
+
+  </div>
+
+</div>
+
+
+{% endblock %}

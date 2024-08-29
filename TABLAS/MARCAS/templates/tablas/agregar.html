@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block titulo %}Agregar Elementos{% endblock %}
+
+{% block contenido %}
+<h2 class="mt-4 mb-4">Agregar</h2>
+
+<!-- Menú para seleccionar qué formulario mostrar -->
+<div class="card">
+    <div class="card-header">
+        <a name="" id="" class="btn btn-success" href="{% url 'productos_baja_existencia' %}" role="button">REGRESAR</a>
+
+<form method="get" action="{% url 'agregar' %}">
+    <div class="form-group">
+        <label for="form_type">Seleccionar lo que quiere agregar:</label>
+        <select id="form_type" name="form_type" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Seleccionar --</option>
+            <option value="marca" {% if request.GET.form_type == 'marca' %}selected{% endif %}>Agregar Marca</option>
+            <option value="categoria" {% if request.GET.form_type == 'categoria' %}selected{% endif %}>Agregar Categoría</option>
+            <option value="tamaño" {% if request.GET.form_type == 'tamaño' %}selected{% endif %}>Agregar Tamaño</option>
+            <option value="edad" {% if request.GET.form_type == 'edad' %}selected{% endif %}>Agregar Edad</option>
+            <option value="animal" {% if request.GET.form_type == 'animal' %}selected{% endif %}>Agregar Animal</option>
+            <option value="consistencia" {% if request.GET.form_type ==  'consistencia' %}selected{% endif %}>Agregar Consistencia</option>
+        </select>
+    </div>
+</form>
+
+<!-- Muestra el formulario seleccionado -->
+{% if form_to_display %}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">
+                {% if request.GET.form_type == 'marca' %}Agregar Marca{% endif %}
+                {% if request.GET.form_type == 'categoria' %}Agregar Categoría{% endif %}
+                {% if request.GET.form_type == 'tamaño' %}Agregar Tamaño{% endif %}
+                {% if request.GET.form_type == 'edad' %}Agregar Edad{% endif %}
+                {% if request.GET.form_type == 'animal' %}Agregar Animal{% endif %}
+                {% if request.GET.form_type == 'consistencia' %}Agregar Consistencia{% endif %}
+            </h5>
+            <form method="post">
+                {% csrf_token %}
+                {{ form_to_display.as_p }}
+                <button type="submit" class="btn btn-primary">Agregar</button>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
