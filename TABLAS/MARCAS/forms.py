@@ -63,3 +63,7 @@ class Cajaform(forms.ModelForm):
         
 class BuscadorProductoForm(forms.Form):
     query = forms.CharField(label='Buscar', max_length=100, required=False)
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
