@@ -334,8 +334,8 @@ tr td {
 }
 
 .button3:hover {
-    background-color: red;
-    color: white;
+    background-color: rgb(5, 4, 4);
+    color: rgb(10, 9, 9);
 }
 /*------------------- login Andia--------------------------*/ 
 /*------------------- insertar css de lo que se hace aki --------------------------*/ 
