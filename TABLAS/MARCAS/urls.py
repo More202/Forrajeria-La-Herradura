@@ -97,11 +97,13 @@ urlpatterns = [
     path('agregar/', views.agregarcosas, name='agregar'),
 
     ######CAJAS######
-    path('cajas', views.cajas, name='cajas'),
-    path('cajas/crear', views.crear_caja, name='crear_caja'),
-    path('tablas/editar-caja', views.editar_caja, name='editar_caja'),
-    path('tablas/editar-caja/<int:id>', views.editar_caja, name='editar_caja'),
-    path('eliminar-caja/<int:id>', views.eliminar_caja, name='eliminar_caja'),
+    path('cajas/', views.cajas, name='cajas'),
+    path('crear_caja/', views.crear_caja, name='crear_caja'),
+    path('editar_caja/<int:id>/', views.editar_caja, name='editar_caja'),
+    path('eliminar_caja/<int:id>/', views.eliminar_caja, name='eliminar_caja'),
+    path('cerrar_caja/<int:id>/', views.cerrar_caja, name='cerrar_caja'),
+    path('apertura-caja/', views.apertura_caja, name='apertura_caja'),
+
 
 
 

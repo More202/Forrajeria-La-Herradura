@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'forrajerias',
         'USER': 'root',
-        'PASSWORD': 'ANDIA12345678',
+        'PASSWORD': 'Number122130',
         'HOST': 'localhost',
         'PORT': '3306'
     }

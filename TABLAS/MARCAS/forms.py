@@ -65,5 +65,12 @@ class BuscadorProductoForm(forms.Form):
     query = forms.CharField(label='Buscar', max_length=100, required=False)
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'placeholder': 'Usuario'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña'}))
+
+class AperturaCajaForm(forms.Form):
+    monto_inicial = forms.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        widget=forms.NumberInput(attrs={'placeholder': 'Monto inicial', 'step': '0.01'})
+    )

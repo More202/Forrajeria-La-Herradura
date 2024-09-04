@@ -352,7 +352,23 @@ def menu_p(request):
     return render(request, 'paginas/menu_p.html')
 ##################################----APERTURA----#######################################
 def apertura_caja(request):
-    pass
+    if request.method == 'POST':
+        form = AperturaCajaForm(request.POST)
+        if form.is_valid():
+            monto_inicial = form.cleaned_data['monto_inicial']
+            caja = Caja(
+                monto_ini=monto_inicial,
+                fecha_hs_ap=timezone.now(),
+                abierta=True,
+                total_ing=0,
+                total_egr=0
+            )
+            caja.save()
+            return redirect('cajas')  # Redirect to the list of cajas
+    else:
+        form = AperturaCajaForm()
+    
+    return render(request, 'tablas/htmlbase/apertura_caja.html', {'formulario': form})
 
 def stock(request):
     pass
@@ -426,3 +442,4 @@ def agregarcosas(request):
         'animal_form': animal_form,
         'consistencia_form': consistencia_form,
     })
+
