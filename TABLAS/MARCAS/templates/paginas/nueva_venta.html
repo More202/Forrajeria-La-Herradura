@@ -7,11 +7,11 @@
 <div class="venta-container">
     <header>
         <div class="user-info">
-            <img src="{% static 'img/user-icon.png' %}" alt="User Icon">
-            <span>Hola, Usuario</span>
+            <img src=# alt="User Icon">
+            <span>Hola,</span>
         </div>
         <div class="sucursal-info">
-            Sucursal: Av. Hipolito Yrigoyen 5
+            Sucursal:
         </div>
         <div class="header-buttons">
             <button class="btn btn-primary">LISTA DE VENTAS</button>
@@ -23,7 +23,7 @@
         {% csrf_token %}
         <div class="venta-header">
             <div class="orden-info">
-                <span>ORDEN #3252</span>
+                <span>Compra n°: </span>
                 <span>{% now "AGOSTO d, Y" %}</span>
             </div>
             <div class="busqueda-producto">
