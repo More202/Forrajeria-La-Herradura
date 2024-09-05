@@ -5,9 +5,27 @@ from django.contrib.auth import logout
 from .models import *
 from .forms import *
 from django.http import JsonResponse
+from decimal import Decimal
+from django.db import transaction
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+#----------------------------------
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            
+    else:
+        form = LoginForm()
+    
+    return render(request, 'login.html', {'form': form})
 
+
+
+#---------------------------------
 @login_required
 def inicio(request):
     return render(request, 'paginas/inicio.html')
@@ -209,7 +227,7 @@ def crear_animal(request):
     return render(request, 'tablas/htmlbase/crear_animal.html', {'formulario': formulario})
 
 def editar_animal(request, id):
-    animal = Cliente.objects.get(id=id)
+    animal = Animal.objects.get(id=id)
     formulario = Animalform(request.POST or None, request.FILES or None, instance=animal)
     if formulario.is_valid() and request.method == 'POST':
         formulario.save()
@@ -234,7 +252,7 @@ def crear_consistencia(request):
     return render(request, 'tablas/htmlbase/crear_consistencia.html', {'formulario': formulario})
 
 def editar_consistencia(request, id):
-    consistencia = Cliente.objects.get(id=id)
+    consistencia = Consistencia.objects.get(id=id)
     formulario = Consistenciaform(request.POST or None, request.FILES or None, instance=consistencia)
     if formulario.is_valid() and request.method == 'POST':
         formulario.save()
@@ -337,7 +355,23 @@ def menu_p(request):
     return render(request, 'paginas/menu_p.html')
 ##################################----APERTURA----#######################################
 def apertura_caja(request):
-    pass
+    if request.method == 'POST':
+        form = AperturaCajaForm(request.POST)
+        if form.is_valid():
+            monto_inicial = form.cleaned_data['monto_inicial']
+            caja = Caja(
+                monto_ini=monto_inicial,
+                fecha_hs_ap=timezone.now(),
+                abierta=True,
+                total_ing=0,
+                total_egr=0
+            )
+            caja.save()
+            return redirect('nueva_venta')  # Redirigir a nueva_venta en lugar de cajas
+    else:
+        form = AperturaCajaForm()
+    
+    return render(request, 'tablas/htmlbase/apertura_caja.html', {'formulario': form})
 
 def stock(request):
     pass
@@ -411,3 +445,123 @@ def agregarcosas(request):
         'animal_form': animal_form,
         'consistencia_form': consistencia_form,
     })
+##################################----VENTAS----#######################################
+def ventas(request):
+    ventas= Venta.objects.all()
+    return render(request, 'tablas/LISTAR_VENTAS.html', {'ventas': ventas})
+
+def crear_ventas(request):
+    formulario= Ventaform(request.POST or None, request.FILES or None)
+    if formulario.is_valid():
+        formulario.save()
+        return redirect('ventas')
+    return render(request, 'tablas/htmlbase/crear_venta.html', {'formulario': formulario})
+
+def editar_venta(request, id):
+    venta = Venta.objects.get(id=id)
+    formulario = Ventaform(request.POST or None, request.FILES or None, instance=venta)
+    if formulario.is_valid() and request.method == 'POST':
+        formulario.save()
+        return redirect('ventas')
+    return render(request, 'tablas/htmlbase/editar_venta.html', {'formulario': formulario})
+
+def eliminar_venta(request, id):
+    ventas = Venta.objects.get(id=id)
+    ventas.delete()
+    return redirect('ventas')
+##################################----DETALLES----#######################################
+def detalles(request):
+    detalles= DetalleVenta.objects.all()
+    return render(request, 'tablas/LISTAR_DETALLES.html', {'detalles': detalles})
+
+def crear_detalles(request):
+    formulario= DetalleVentaform(request.POST or None, request.FILES or None)
+    if formulario.is_valid():
+        formulario.save()
+        return redirect('detalles')
+    return render(request, 'tablas/htmlbase/crear_detalle.html', {'formulario': formulario})
+
+def editar_detalle(request, id):
+    detalle = DetalleVenta.objects.get(id=id)
+    formulario = DetalleVentaform(request.POST or None, request.FILES or None, instance=detalle)
+    if formulario.is_valid() and request.method == 'POST':
+        formulario.save()
+        return redirect('detalles')
+    return render(request, 'tablas/htmlbase/editar_detalle.html', {'formulario': formulario})
+
+def eliminar_detalle(request, id):
+    detalles = DetalleVenta.objects.get(id=id)
+    detalles.delete()
+    return redirect('detalles')
+
+
+
+@require_http_methods(["GET", "POST"])
+def nueva_venta(request):
+    if request.method == 'POST':
+        with transaction.atomic():
+            cliente_id = request.POST.get('cliente')
+            caja_id = request.POST.get('caja')
+            productos = request.POST.getlist('producto_id')
+            cantidades = request.POST.getlist('cantidad')
+            descuentos = request.POST.getlist('descuento')
+            
+            venta = Venta.objects.create(
+                cliente_id=cliente_id,
+                caja_id=caja_id,
+                fecha_venta=timezone.now().date(),
+                hora_venta=timezone.now().time(),
+                estado=True
+            )
+            
+            total_venta = Decimal('0.00')
+            
+            for producto_id, cantidad, descuento in zip(productos, cantidades, descuentos):
+                producto = Producto.objects.get(id=producto_id)
+                cantidad = int(cantidad)
+                descuento = Decimal(descuento)
+                
+                precio_unitario = producto.precio
+                subtotal = precio_unitario * cantidad
+                descuento_decimal = descuento / 100
+                subtotal_con_descuento = subtotal * (1 - descuento_decimal)
+                
+                DetalleVenta.objects.create(
+                    venta=venta,
+                    producto=producto,
+                    cantidad=cantidad,
+                    precio_unitario=precio_unitario,
+                    subtotal=subtotal_con_descuento,
+                    descuento=descuento
+                )
+                
+                total_venta += subtotal_con_descuento
+                
+                # Actualizar el stock del producto
+                producto.stock_a -= cantidad
+                producto.save()
+            
+            venta.total_venta = total_venta
+            venta.save()
+            
+            caja = Caja.objects.get(id=caja_id)
+            caja.total_ing += total_venta
+            caja.save()
+            
+            return redirect('detalle_venta', venta_id=venta.id)
+    
+    productos = Producto.objects.all()
+    cajas_abiertas = Caja.objects.filter(abierta=True)
+    clientes = Cliente.objects.all()
+    
+    return render(request, 'paginas/nueva_venta.html', {
+        'productos': productos,
+        'cajas_abiertas': cajas_abiertas,
+        'clientes': clientes
+    })
+
+def buscar_producto(request):
+    query = request.GET.get('q', '')
+    productos = Producto.objects.filter(nombre__icontains=query)[:10]
+    data = [{'id': p.id, 'nombre': p.nombre, 'precio': str(p.precio), 'stock': p.stock_a} for p in productos]
+    return JsonResponse(data, safe=False)

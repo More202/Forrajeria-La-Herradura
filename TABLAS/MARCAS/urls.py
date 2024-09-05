@@ -97,12 +97,30 @@ urlpatterns = [
     path('agregar/', views.agregarcosas, name='agregar'),
 
     ######CAJAS######
-    path('cajas', views.cajas, name='cajas'),
-    path('cajas/crear', views.crear_caja, name='crear_caja'),
-    path('tablas/editar-caja', views.editar_caja, name='editar_caja'),
-    path('tablas/editar-caja/<int:id>', views.editar_caja, name='editar_caja'),
-    path('eliminar-caja/<int:id>', views.eliminar_caja, name='eliminar_caja'),
+    path('cajas/', views.cajas, name='cajas'),
+    path('crear_caja/', views.crear_caja, name='crear_caja'),
+    path('editar_caja/<int:id>/', views.editar_caja, name='editar_caja'),
+    path('eliminar_caja/<int:id>/', views.eliminar_caja, name='eliminar_caja'),
+    path('cerrar_caja/<int:id>/', views.cerrar_caja, name='cerrar_caja'),
 
+
+    ######VENTAS######
+    path('ventas', views.ventas, name='ventas'),
+    path('ventas/crear', views.crear_ventas, name='crear_venta'),
+    path('tablas/editar-venta', views.editar_venta, name='editar_venta'),
+    path('tablas/editar-venta/<int:id>', views.editar_venta, name='editar_venta'),
+    path('eliminar-venta/<int:id>', views.eliminar_venta, name='eliminar_venta'),
+
+    ######DETALLE DE VENTA######
+    path('detalles', views.detalles, name='detalles'),
+    path('detalles/crear', views.crear_detalles, name='crear_detalle'),
+    path('tablas/editar-detalle', views.editar_detalle, name='editar_detalle'),
+    path('tablas/editar-detalle/<int:id>', views.editar_detalle, name='editar_detalle'),
+    path('eliminar-detalle/<int:id>', views.eliminar_detalle, name='eliminar_detalle'),
+
+    path('apertura-caja/', views.apertura_caja, name='apertura_caja'),
+    path('nueva-venta/', views.nueva_venta, name='nueva_venta'),
+    path('buscar-producto/', views.buscar_producto, name='buscar_producto'),
 
 
 

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Nueva Venta{% endblock %}
+
+{% block contenido %}
+<div class="venta-container">
+    <header>
+        <div class="user-info">
+            <img src="{% static 'img/user-icon.png' %}" alt="User Icon">
+            <span>Hola, Usuario</span>
+        </div>
+        <div class="sucursal-info">
+            Sucursal: Av. Hipolito Yrigoyen 5
+        </div>
+        <div class="header-buttons">
+            <button class="btn btn-primary">LISTA DE VENTAS</button>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'productos_baja_existencia' %}" class="btn btn-success btn-block">STOCK</a>
+        </div>
+    </header>
+
+    <form id="venta-form" method="post" action="{% url 'nueva_venta' %}">
+        {% csrf_token %}
+        <div class="venta-header">
+            <div class="orden-info">
+                <span>ORDEN #3252</span>
+                <span>{% now "AGOSTO d, Y" %}</span>
+            </div>
+            <div class="busqueda-producto">
+                <input type="text" id="buscar-producto" placeholder="Buscar producto...">
+            </div>
+        </div>
+            <!-- botones que no hacen nada por el momento-->
+        <div class="categorias">
+            <button type="button" class="btn btn-dark">ALIMENTO</button>
+            <button type="button" class="btn btn-dark">INDUMENTARIA</button>
+            <button type="button" class="btn btn-dark">MEDICINA</button>
+            <button type="button" class="btn btn-dark">PERRO</button>
+            <button type="button" class="btn btn-dark">GATO</button>
+            <button type="button" class="btn btn-dark">VACA</button>
+            <button type="button" class="btn btn-dark">CONEJO</button>
+            <button type="button" class="btn btn-dark">AVE</button>
+        </div>
+
+        <table id="productos-venta">
+            <thead>
+                <tr>
+                    <th>NOMBRE</th>
+                    <th>CANTIDAD</th>
+                    <th>PRECIO</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- productos que van a comprar -->
+            </tbody>
+        </table>
+
+        <div class="totales">
+            <p>Subtotal: $<span id="subtotal">0.00</span></p>
+            <p>Descuento: $<span id="descuento-total">0.00</span></p>
+            <p>IVA: $<span id="iva">0.00</span></p>
+            <p class="total">TOTAL: $<span id="total">0.00</span></p>
+        </div>
+        <!-- botones que no hacen nada por el momento-->
+        <div class="action-buttons">
+            <button type="button" class="btn btn-danger">Cancelar</button>
+            <button type="button" class="btn btn-primary">Descuento</button>
+            <button type="button" class="btn btn-info">Imprimir</button>
+            <button type="submit" class="btn btn-success">Finalizar Venta</button>
+            <button type="button" class="btn btn-secondary">Espera</button>
+        </div>
+    </form>
+</div>
+<script src="{% static 'js/nueva_venta.js' %}"></script>
+{% endblock %}
